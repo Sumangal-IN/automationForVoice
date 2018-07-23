@@ -18,11 +18,11 @@ public class AppController {
 		return "hello world";
 	}
 
-	@RequestMapping(value = "/orderStatus/{orderNumber}", method = RequestMethod.GET, produces = { "application/json" })
-	@ResponseBody
-	public String attendCall(@PathVariable("orderNumber") String orderNumber) {
-		Gson gson = new Gson();
-		// Your code goes here
-		return gson.toJson(new OrderStatus(orderNumber));
-	}
+//	@RequestMapping(value = "/orderStatus/{orderNumber}", method = RequestMethod.GET, produces = { "application/json" })
+//	@ResponseBody
+//	public String attendCall(@PathVariable("orderNumber") String orderNumber) {
+//		Gson gson = new Gson();
+//		// Your code goes here
+//		return gson.toJson(new OrderStatus(orderNumber));
+//	}
 }
