@@ -1,5 +1,10 @@
 package com.tcs.automationForVoice.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.openqa.selenium.WebDriver;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +31,7 @@ import VoiceAutomationTest.Trial;
 public class Controller {
 	
 	
-	@RequestMapping(value = "order/{number}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	/*@RequestMapping(value = "order/{number}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
 	public Order order(@PathVariable("number") String OrderNo) {
@@ -38,17 +43,33 @@ public class Controller {
         return od;
         
        
+    }*/
+	
+	@RequestMapping(value = "order/{number}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	   
+	@ResponseBody
+	public Map<String,String> order(@PathVariable("number") String OrderNo) {
+		   
+	
+        Trial tr=new Trial();
+        Map<String,String> map=tr.retriveOrder(OrderNo);
+        return map;
+       // Gson g=new Gson();
+       
+   
+        
+       
     }
 	
 	@RequestMapping(value = "orderStatus/{number}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
-	public String orderStatus(@PathVariable("number") String OrderNo) 
+	public Map<String,String> orderStatus(@PathVariable("number") String OrderNo) 
 	{
-		Trial tr=new Trial();
-        Order od=tr.RetrieveOrderDetail(OrderNo);
-        Gson g=new Gson();
-        return g.toJson(od.getOrderState());
+		Order od=new Order();
+		Map<String,String> map=new HashMap<String,String>();
+		map.put("order.status",od.getOrderState());
+		return map;
 		
 	}
 	
@@ -84,13 +105,17 @@ public class Controller {
 	@RequestMapping(value = "OrderCancel/{number}", method=RequestMethod.DELETE,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
-	public Cancel orderCancel(@PathVariable("number") String OrderNo) {
+	public Map<String,String> orderCancel(@PathVariable("number") String OrderNo) {
 		   
-		System.out.println("Order To Cancel"+OrderNo);
+		System.out.println("sabya Order To Cancel"+OrderNo);
+		System.out.println("length::"+OrderNo.length());
+		System.out.println("match::"+OrderNo.matches("\\d+"));
+		
         Trial tr=new Trial();
-        Cancel cancel=tr.orderCancel(OrderNo);
+        Map<String,String> map=tr.orderCancel(OrderNo);
+       
        // Gson g=new Gson();
-        return cancel;
+        return map;
         
        
     }

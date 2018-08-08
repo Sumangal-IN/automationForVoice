@@ -1,6 +1,8 @@
 package VoiceAutomationTest;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -14,6 +16,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.tcs.automationForVoice.model.Cancel;
 import com.tcs.automationForVoice.model.Customer;
 import com.tcs.automationForVoice.model.Order;
@@ -114,6 +117,47 @@ public class Trial {
 
 		return od;
 
+	}
+
+	public Map<String,String> retriveOrder(String Order)
+	{
+		Order od=this.RetrieveOrderDetail(Order);
+		Map<String,String> map=new HashMap<String,String>();
+		map.put("order.CreationDate", od.getCreationDate());
+		map.put("order.totalToPay", od.getTotalToPay());
+		map.put("order.SubmitDate", od.getSubmitDate());
+		map.put("order.lastModifiedDate", od.getLastModifiedDate());
+		map.put("order.orderState", od.getOrderState());
+		map.put("order.paymentGroups", od.getPaymentGroups());
+		map.put("order.jurisdiction", od.getJurisdiction());
+		map.put("order.stateDetail", od.getStateDetail());
+		map.put("order.paymentGroups", od.getPaymentGroups());
+		map.put("order.paymentGroups", od.getPaymentGroups());
+		map.put("order.paymentGroups", od.getPaymentGroups());
+		map.put("order.paymentGroups", od.getPaymentGroups());
+		map.put("order.paymentGroups", od.getPaymentGroups());
+		map.put("order.CreationDate.type", od.getCreationDate_type());
+		map.put("order.totalToPay.type", od.getTotalToPay_type());
+		map.put("order.SubmitDate.type", od.getSubmitDate_type());
+		map.put("order.lastModifiedDate.type", od.getLastModifiedDate_type());
+		map.put("order.orderState.type", od.getOrderState_type());
+		map.put("order.paymentGroups.type", od.getPaymentGroups_type());
+		map.put("order.jurisdiction.type", od.getJurisdiction_type());
+		map.put("order.stateDetail.type", od.getStateDetail_type());
+		map.put("order.paymentGroups.type", od.getPaymentGroups_type());
+		map.put("order.paymentGroups.type", od.getPaymentGroups_type());
+		map.put("order.paymentGroups.type", od.getPaymentGroups_type());
+		map.put("order.paymentGroups.type", od.getPaymentGroups_type());
+		map.put("order.paymentGroups.type", od.getPaymentGroups_type());
+
+		System.out.println("********"+od.getError()+od.getError().length());
+		if(od.getError().length()>0)
+		{
+			map.put("order.isError","True");
+			map.put("order.isError.type",od.getError_type());
+		}
+
+		return map;
 	}
 
 	public String fetchValue(String queryResult,String value) {
@@ -294,7 +338,13 @@ public class Trial {
 	}
 	public WebElement returnid(WebDriver driver,String id)
 	{
-		WebElement pathFix=driver.findElement(By.xpath(id));
+		WebElement pathFix=null;
+		try{
+			pathFix=driver.findElement(By.xpath(id));
+		}
+		catch(Exception ex) {
+			pathFix=null;
+		}
 		return pathFix;
 	}
 
@@ -323,8 +373,9 @@ public class Trial {
 
 }*/
 
-	public Cancel orderCancel(String OrderId)
+	public Map<String,String> orderCancel(String OrderId)
 	{
+
 		WebDriver driver=initDriver();
 		//String amendableState="YES";
 		String postCancellationState="";
@@ -335,147 +386,161 @@ public class Trial {
 		Cancel cancel=new Cancel();
 
 		try {
-            driver.manage().window().maximize();
+			String regex="//d+";
+			//System.out.println("length::"+OrderId.length());
+			//System.out.println("match::"+OrderId.matches(regex));
+
+
+			driver.manage().window().maximize();
 			driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
 
 			driver.get(Origin.GET_USER_AGENT_URL.getValue());
-			if(returnid(driver,Origin.LOGIN_TEXT_FIELD.getValue()).isDisplayed())
+			if(OrderId.length()==10 )//&& OrderId.matches(regex))
+
 			{
-				returnid(driver,Origin.LOGIN_TEXT_FIELD.getValue()).sendKeys(Origin.AGENT_USERID.getValue());
-				returnid(driver,Origin.PASSWORD_FIELD.getValue()).sendKeys(Origin.AGENT_PASSWORD.getValue());
 
-				returnid(driver,Origin.LOGIN_BUTTON.getValue()).click();
-				if(returnid(driver,Origin.CONTACT_CENTER_LOACTION_FIELD.getValue()).isDisplayed())
+				if(returnid(driver,Origin.LOGIN_TEXT_FIELD.getValue()).isDisplayed())
 				{
-					returnid(driver,Origin.CONTACT_CENTER_LOACTION_FIELD.getValue()).sendKeys(Origin.CONTACT_CENTER_LOACTION.getValue());
-					returnid(driver,Origin.CONTACT_CENTER_CONFIRM_LOCATION.getValue()).click();
+					returnid(driver,Origin.LOGIN_TEXT_FIELD.getValue()).sendKeys(Origin.AGENT_USERID.getValue());
+					returnid(driver,Origin.PASSWORD_FIELD.getValue()).sendKeys(Origin.AGENT_PASSWORD.getValue());
 
-					waitId(driver,Origin.CONTACT_CENTER_LOACTION_CONTINUE.getValue());
-
-					returnid(driver,Origin.CONTACT_CENTER_LOACTION_CONTINUE.getValue()).click();
-
-					if(returnid(driver,Origin.ORDER_ID_SEARCH_TEXTBOX.getValue()).isDisplayed())
+					returnid(driver,Origin.LOGIN_BUTTON.getValue()).click();
+					if(returnid(driver,Origin.CONTACT_CENTER_LOACTION_FIELD.getValue()).isDisplayed())
 					{
-						returnid(driver,Origin.ORDER_ID_SEARCH_TEXTBOX.getValue()).sendKeys(OrderId);
-						((JavascriptExecutor) driver).executeScript(
-								"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_ID_SEARCH_BUTTON.getValue()));
-						((JavascriptExecutor) driver).executeScript(
-								"arguments[0].click();", returnid(driver,Origin.ORDER_ID_SEARCH_BUTTON.getValue()));
+						returnid(driver,Origin.CONTACT_CENTER_LOACTION_FIELD.getValue()).sendKeys(Origin.CONTACT_CENTER_LOACTION.getValue());
+						returnid(driver,Origin.CONTACT_CENTER_CONFIRM_LOCATION.getValue()).click();
 
-						waitId(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue());
-						try {
-							
-							if(returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON_DISABLED.getValue()).isDisplayed())
-							{
-								//returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()).click();
-								System.out.println("amend disabled");
-								//amendableState="NO";
-								
-								
-								error="Order is not in Cancellable state";
-								postCancellationState="";
-							}
-						}
-						catch(Exception e)
-						{
-							System.out.println("in catch!!!");
-							e.printStackTrace();
-							((JavascriptExecutor) driver).executeScript(
-									"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()));
-							((JavascriptExecutor) driver).executeScript(
-									"arguments[0].click();", returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()));
-							//returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()).click();
-							System.out.println("clicked******");
-							waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
-							waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
-							
-						
-							
-						}
-						
-						if(driver.findElement(By.xpath(Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue())) != null)
-						{
-							System.out.println("dropdown present******");
-							//returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()).click();
-							//waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
-							//if(returnid(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue()).isDisplayed())
-							
-								returnid(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue()).click();
-								try{
-								if(driver.findElement(By.xpath(Origin.ORDER_AMENDMENT_ACTION_DROPDOWN_CANCEL.getValue())) != null)
-								{
-								
-								returnid(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN_CANCEL.getValue()).click();
-								}
-								}
-								catch(Exception e)
-								{
-									System.out.println("no cancel option");
-									error="Order is not in Cancellable state";
-									postCancellationState="";
-									driver.quit();
-								}
-								
-								
-									
-								
-								
-								waitId(driver,Origin.ORDER_AMENDMENT_CANCEL_MODAL_REASON_DROPDOWN.getValue());
+						waitId(driver,Origin.CONTACT_CENTER_LOACTION_CONTINUE.getValue());
 
-								returnid(driver,Origin.ORDER_AMENDMENT_CANCEL_MODAL_REASON_DROPDOWN.getValue()).click();
-								
-								returnid(driver,Origin.ORDER_AMENDMENT_CANCEL_MODAL_REASON_SELECT.getValue()).click();
-								waitId(driver,Origin.ORDER_AMENDMENT_CANCEL_SAVE_BUTTON.getValue());
-								returnid(driver,Origin.ORDER_AMENDMENT_CANCEL_SAVE_BUTTON.getValue()).click();
-								waitId(driver,Origin.ORDER_AMENDMENT_PROCEED_TO_CHKOUT.getValue());
-								((JavascriptExecutor) driver).executeScript(
-										"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_AMENDMENT_PROCEED_TO_CHKOUT.getValue()));
-								((JavascriptExecutor) driver).executeScript(
-										"arguments[0].click();", returnid(driver,Origin.ORDER_AMENDMENT_PROCEED_TO_CHKOUT.getValue()));
-								//returnid(driver,Origin.ORDER_AMENDMENT_PROCEED_TO_CHKOUT.getValue()).click();
-								waitId(driver,Origin.ORDER_AMENDMENT_REFUND_PLACE_BUTTON.getValue());
-								((JavascriptExecutor) driver).executeScript(
-										"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_AMENDMENT_REFUND_PLACE_BUTTON.getValue()));
-								((JavascriptExecutor) driver).executeScript(
-										"arguments[0].click();", returnid(driver,Origin.ORDER_AMENDMENT_REFUND_PLACE_BUTTON.getValue()));
-								
-								waitId(driver,Origin.ORDER_AMENDMENT_ORDER_MODAL.getValue());
-								if(returnid(driver,Origin.ORDER_AMENDMENT_ORDER_MODAL.getValue()).isDisplayed())
-								{
-									if(returnid(driver,Origin.ORDER_AMENDMENT_ORDER_MODAL.getValue()).getText().contains("cancelled"))
-									{
-										System.out.println("*****************Order Cacelled");
-								         error="";
-								         postCancellationState="Cancelled Order";
-								         
-										//postCancellationState="Cancelled Order";
+						returnid(driver,Origin.CONTACT_CENTER_LOACTION_CONTINUE.getValue()).click();
+
+						if(returnid(driver,Origin.ORDER_ID_SEARCH_TEXTBOX.getValue()).isDisplayed())
+						{
+							returnid(driver,Origin.ORDER_ID_SEARCH_TEXTBOX.getValue()).sendKeys(OrderId);
+							((JavascriptExecutor) driver).executeScript(
+									"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_ID_SEARCH_BUTTON.getValue()));
+							((JavascriptExecutor) driver).executeScript(
+									"arguments[0].click();", returnid(driver,Origin.ORDER_ID_SEARCH_BUTTON.getValue()));
+
+
+							if(returnid(driver,Origin.ORDER_NOT_FOUND_ERROR.getValue())==null){								
+									waitId(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue());
+									try {
+
+										if(returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON_DISABLED.getValue())!=null)
+										{
+											//returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()).click();
+											System.out.println("amend disabled");
+											//amendableState="NO";
+
+
+											error="Order is not in Cancellable state";
+											postCancellationState="";
+										}
+										else {
+											 System.out.println("inside else");
+										}
 									}
-								}
+									catch(Exception e)
+									{
+										System.out.println("in catch!!!");
+										e.printStackTrace();
+										((JavascriptExecutor) driver).executeScript(
+												"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()));
+										((JavascriptExecutor) driver).executeScript(
+												"arguments[0].click();", returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()));
+										//returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()).click();
+										System.out.println("clicked******");
+										waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
+										waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
+									}
+
+									if(driver.findElement(By.xpath(Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue())) != null)
+									{
+										System.out.println("dropdown present******");
+										//returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()).click();
+										//waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
+										//if(returnid(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue()).isDisplayed())
+
+										returnid(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue()).click();
+										try{
+											if(driver.findElement(By.xpath(Origin.ORDER_AMENDMENT_ACTION_DROPDOWN_CANCEL.getValue())) != null)
+											{
+
+												returnid(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN_CANCEL.getValue()).click();
+											}
+										}
+										catch(Exception e)
+										{
+											System.out.println("no cancel option");
+											error="Order is not in Cancellable state";
+											postCancellationState="";
+											driver.quit();
+										}
 
 
+										waitId(driver,Origin.ORDER_AMENDMENT_CANCEL_MODAL_REASON_DROPDOWN.getValue());
+
+										returnid(driver,Origin.ORDER_AMENDMENT_CANCEL_MODAL_REASON_DROPDOWN.getValue()).click();
+
+										returnid(driver,Origin.ORDER_AMENDMENT_CANCEL_MODAL_REASON_SELECT.getValue()).click();
+										waitId(driver,Origin.ORDER_AMENDMENT_CANCEL_SAVE_BUTTON.getValue());
+										returnid(driver,Origin.ORDER_AMENDMENT_CANCEL_SAVE_BUTTON.getValue()).click();
+										waitId(driver,Origin.ORDER_AMENDMENT_PROCEED_TO_CHKOUT.getValue());
+										((JavascriptExecutor) driver).executeScript(
+												"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_AMENDMENT_PROCEED_TO_CHKOUT.getValue()));
+										((JavascriptExecutor) driver).executeScript(
+												"arguments[0].click();", returnid(driver,Origin.ORDER_AMENDMENT_PROCEED_TO_CHKOUT.getValue()));
+										//returnid(driver,Origin.ORDER_AMENDMENT_PROCEED_TO_CHKOUT.getValue()).click();
+										waitId(driver,Origin.ORDER_AMENDMENT_REFUND_PLACE_BUTTON.getValue());
+										((JavascriptExecutor) driver).executeScript(
+												"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_AMENDMENT_REFUND_PLACE_BUTTON.getValue()));
+										((JavascriptExecutor) driver).executeScript(
+												"arguments[0].click();", returnid(driver,Origin.ORDER_AMENDMENT_REFUND_PLACE_BUTTON.getValue()));
+
+										waitId(driver,Origin.ORDER_AMENDMENT_ORDER_MODAL.getValue());
+										if(returnid(driver,Origin.ORDER_AMENDMENT_ORDER_MODAL.getValue()).isDisplayed())
+										{
+											if(returnid(driver,Origin.ORDER_AMENDMENT_ORDER_MODAL.getValue()).getText().contains("cancelled"))
+											{
+												System.out.println("*****************Order Cacelled");
+												error="";
+												postCancellationState="Cancelled Order";
+
+												//postCancellationState="Cancelled Order";
+											}
+										}
+
+									}
+									else
+									{
+										error="Order is not in Cancellable state";
+										postCancellationState="";
+									}
 
 
-							
-
+								
+							}
 						}
 						else
 						{
-							error="Order is not in Cancellable state";
-							postCancellationState="";
+							error="No Search Record Found";
 						}
-
-
 					}
-						
 				}
+			}
+			else
+			{
+				error="Invalid Order Number";
 			}
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-		
-		
+
+
+
 		cancel.setOrderNo(OrderId);
 		cancel.setOrderNo_type(orderNo_type);
 		cancel.setError(error);
@@ -483,9 +548,19 @@ public class Trial {
 		//cancel.setAmendableState(amendableState);
 		cancel.setPostCancellationState(postCancellationState);
 		cancel.setPostCancellationState_type(postCancellationState_type);
-		
+		Map<String,String> cancelmap=new HashMap<String,String>();
+		cancelmap.put("order.orderNo",cancel.getOrderNo());
+		cancelmap.put("order.orderNo.type",cancel.getOrderNo_type());
+		cancelmap.put("orderCancel.Status",cancel.getPostCancellationState());
+		cancelmap.put("orderCancel.Status.type",cancel.getPostCancellationState_type());
+		if(cancel.getError().length()>0)
+		{
+			cancelmap.put("orderCancel.IsError","True");
+			cancelmap.put("orderCancel.IsError.type",cancel.getError_type());
+		}
+
 		driver.quit();
-		
-		return cancel;
+
+		return cancelmap;
 	}
 }

@@ -47,7 +47,7 @@ public enum Origin
 	GET_USER_AGENT_URL("GET_USER_AGENT_URL","http://lnxs0506.uk.b-and-q.com:8030/agent-front/"),
 	ORDER_AMENDMENT_PROCEED_TO_CHKOUT("ORDER_AMENDMENT_PROCEED_TO_CHKOUT","//input[@value='Proceed to checkout']"),
 	ORDER_AMENDMENT_AMEND_ORDER_BUTTON_DISABLED("ORDER_AMENDMENT_AMEND_ORDER_BUTTON_DISABLED","//*[@id='Form1']/ul/li[1]/input[@disabled='']"),
-	
+	ORDER_NOT_FOUND_ERROR("ORDER_NOT_FOUND_ERROR","//*[@id='tabs-order-history']/section/div[1]/p/strong"),
 	
 	
 	
