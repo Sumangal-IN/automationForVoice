@@ -27,6 +27,8 @@ public class Order{
 	private String stateDetail_type;
 	private String error;
 	private String error_type;
+	private String cust_rel_order;
+	private String cust_rel_order_type;
 		
 	
 	
@@ -171,6 +173,22 @@ public class Order{
 	}
 	public void setError_type(String error_type) {
 		this.error_type = error_type;
+	}
+
+	public String getCust_rel_order() {
+		return cust_rel_order;
+	}
+
+	public void setCust_rel_order(String cust_rel_order) {
+		this.cust_rel_order = cust_rel_order;
+	}
+
+	public String getCust_rel_order_type() {
+		return cust_rel_order_type;
+	}
+
+	public void setCust_rel_order_type(String cust_rel_order_type) {
+		this.cust_rel_order_type = cust_rel_order_type;
 	}
 
 	

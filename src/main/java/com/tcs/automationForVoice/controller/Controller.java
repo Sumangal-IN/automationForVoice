@@ -22,37 +22,23 @@ import com.tcs.automationForVoice.model.Order;
 
 import VoiceAutomationTest.Trial;
 
-/**
- * @author biswad01
- *
- */
+
 @RestController
 @RequestMapping(value = "/")
 public class Controller {
 	
+
 	
-	/*@RequestMapping(value = "order/{number}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+
+	
+	@RequestMapping(value = "orderStatus/{number}/{customerId}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
-	public Order order(@PathVariable("number") String OrderNo) {
-		   
-		
-        Trial tr=new Trial();
-        Order od=tr.RetrieveOrderDetail(OrderNo);
-       // Gson g=new Gson();
-        return od;
-        
-       
-    }*/
-	
-	@RequestMapping(value = "order/{number}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	   
-	@ResponseBody
-	public Map<String,String> order(@PathVariable("number") String OrderNo) {
+	public Map<String,String> orderStatus(@PathVariable("number") String OrderNo,@PathVariable("customerId") String custId) {
 		   
 	
         Trial tr=new Trial();
-        Map<String,String> map=tr.retriveOrder(OrderNo);
+        Map<String,String> map=tr.retriveOrder(OrderNo,custId);
         return map;
        // Gson g=new Gson();
        
@@ -102,7 +88,7 @@ public class Controller {
 	
 	   
 	
-	@RequestMapping(value = "OrderCancel/{number}", method=RequestMethod.DELETE,produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "cancelOrder/{number}", method=RequestMethod.DELETE,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
 	public Map<String,String> orderCancel(@PathVariable("number") String OrderNo) {
