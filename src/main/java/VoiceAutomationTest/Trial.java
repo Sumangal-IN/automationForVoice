@@ -73,6 +73,12 @@ public class Trial {
 			driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
 			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 			queryResult = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
+			
+			if(!queryResult.contains("No items returned"))
+			{
+				
+			
+			
 			submitDate = fetchValue(queryResult,"submittedDate");
 			creationDate=fetchValue(queryResult,"creationDate");
 			lastModifiedDate=fetchValue(queryResult,"lastModifiedDate");
@@ -84,10 +90,18 @@ public class Trial {
 			paymentGroups=fetchValue(queryResult,"paymentGroups");
 			jurisdiction=fetchValue(queryResult,"jurisdiction");
 			stateDetail=fetchValue(queryResult,"stateDetail");
-			error="";
 			
-			cust_rel_order=this.AssociationCheck(driver, queryResult, OrderNo, custId);
+			error="";
+			cust_rel_order=this.AssociationCheck(driver,error,queryResult, OrderNo, custId);
 		}
+			else
+			{
+				error="There is an error while retrieving information";
+				cust_rel_order="No match Found";
+			}
+		}
+		
+		
 		catch(Exception e)
 		{
 			System.out.println("In catch!!!");
@@ -125,12 +139,13 @@ public class Trial {
 
 	}
 
-	public String AssociationCheck(WebDriver driver,String queryResult,String Order,String custId)
+	public String AssociationCheck(WebDriver driver,String error,String queryResult,String Order,String custId)
 	{
 		String profileId="";
 		String newQueryResult="";
 		String extCustId="";
 		String flag="No Match Found";
+		error="";
 		profileId=this.fetchValue(queryResult, "profileId");
 
 		driver.get(Origin.GET_USER_PROFILE__DYN_URL.getValue());
@@ -141,12 +156,22 @@ public class Trial {
 		driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		newQueryResult = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
-		extCustId=this.fetchValue(newQueryResult, "externalId");
-		System.out.println("ext Iddd"+extCustId);
-		if(extCustId.trim().equals(custId))
+		if(!newQueryResult.contains("No items returned"))
 		{
-			flag="true";
+			extCustId=this.fetchValue(newQueryResult, "externalId");
+			System.out.println("ext Iddd"+extCustId);
+			if(extCustId.trim().equals(custId))
+			{
+				flag="true";
+			}
+			error="";
 		}
+		else
+		{
+			error="There is an error while retrieving information";
+		}
+		
+		
 		return flag;
 
 	}
