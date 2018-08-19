@@ -29,6 +29,9 @@ public class Order{
 	private String error_type;
 	private String cust_rel_order;
 	private String cust_rel_order_type;
+	private String orderSuceessStatus;
+	private String orderSuceessStatus_type;
+	
 		
 	
 	
@@ -189,6 +192,22 @@ public class Order{
 
 	public void setCust_rel_order_type(String cust_rel_order_type) {
 		this.cust_rel_order_type = cust_rel_order_type;
+	}
+
+	public String getOrderSuceessStatus() {
+		return orderSuceessStatus;
+	}
+
+	public void setOrderSuceessStatus(String orderSuceessStatus) {
+		this.orderSuceessStatus = orderSuceessStatus;
+	}
+
+	public String getOrderSuceessStatus_type() {
+		return orderSuceessStatus_type;
+	}
+
+	public void setOrderSuceessStatus_type(String orderSuceessStatus_type) {
+		this.orderSuceessStatus_type = orderSuceessStatus_type;
 	}
 
 	

@@ -47,7 +47,8 @@ public class Trial {
 		String paymentGroups="";
 		String jurisdiction="";
 		String stateDetail="";
-		String error="There is an error while retrieving information";
+		String orderStatusSuccessStatus="true";
+		String error="";
 		String submitDate_type="date";
 		String creationDate_type="date";
 		String lastModifiedDate_type="date";
@@ -59,7 +60,8 @@ public class Trial {
 		String stateDetail_type="string";
 		String error_type="string";
 		String cust_rel_order="";
-		String cust_rel_order_type="string"; 
+		String cust_rel_order_type="string";
+		String orderStatusSuccessStatus_type="String";
 		Order od=new Order();
 
 		try
@@ -90,14 +92,33 @@ public class Trial {
 			paymentGroups=fetchValue(queryResult,"paymentGroups");
 			jurisdiction=fetchValue(queryResult,"jurisdiction");
 			stateDetail=fetchValue(queryResult,"stateDetail");
+			orderStatusSuccessStatus="true";
 			
 			error="";
-			cust_rel_order=this.AssociationCheck(driver,error,queryResult, OrderNo, custId);
+			cust_rel_order=this.AssociationCheck(driver,orderStatusSuccessStatus,error,queryResult, OrderNo, custId);
+			if(cust_rel_order.contains("invalid"))
+			{
+				submitDate = "";
+				creationDate="";
+				lastModifiedDate="";
+				orderState="";
+				//orderState=fetchValue(queryResult,"status12");
+				orderState="";
+				orderOriginSource="";
+				totalToPay="";
+				paymentGroups="";
+				jurisdiction="";
+				stateDetail="";
+				orderStatusSuccessStatus="true";
+				error="";
+				
+			}
 		}
 			else
 			{
-				error="There is an error while retrieving information";
-				cust_rel_order="No match Found";
+				error="";
+				orderStatusSuccessStatus="true";
+				cust_rel_order="false";
 			}
 		}
 		
@@ -105,6 +126,8 @@ public class Trial {
 		catch(Exception e)
 		{
 			System.out.println("In catch!!!");
+			error="Technical Error";
+			orderStatusSuccessStatus="false";
 			e.printStackTrace();
 		}
 
@@ -129,8 +152,15 @@ public class Trial {
 		od.setStateDetail_type(stateDetail_type);
 		od.setTotalToPay_type(totalToPay_type);
 		od.setError_type(error_type);
+		if(cust_rel_order.contains("invalid"))
+		{
+			cust_rel_order="false";
+		}
+		
 		od.setCust_rel_order(cust_rel_order);
 		od.setCust_rel_order_type(cust_rel_order_type);
+		od.setOrderSuceessStatus(orderStatusSuccessStatus);
+		od.setOrderSuceessStatus_type(orderStatusSuccessStatus_type);
 
 
 		driver.quit();
@@ -139,15 +169,20 @@ public class Trial {
 
 	}
 
-	public String AssociationCheck(WebDriver driver,String error,String queryResult,String Order,String custId)
+	public String AssociationCheck(WebDriver driver,String successStatus,String error,String queryResult,String Order,String custId)
 	{
 		String profileId="";
 		String newQueryResult="";
 		String extCustId="";
-		String flag="No Match Found";
+		String flag="false";
+		
 		error="";
+		successStatus="true";
 		profileId=this.fetchValue(queryResult, "profileId");
 
+		try
+		{
+		
 		driver.get(Origin.GET_USER_PROFILE__DYN_URL.getValue());
 		String initialOrderQuery="<query-items item-descriptor="+'"'+"user"+'"'+">id="+'"'+profileId+'"'+"</query-items>";
 
@@ -164,13 +199,21 @@ public class Trial {
 			{
 				flag="true";
 			}
-			error="";
+			
 		}
 		else
 		{
-			error="There is an error while retrieving information";
+			flag="invalid customer";
 		}
 		
+		}
+		catch(Exception e)
+		{
+			successStatus="false";
+			error="Technical Error";
+		}
+		
+		System.out.println("*******************FLAG::::"+flag);
 		
 		return flag;
 
@@ -180,32 +223,39 @@ public class Trial {
 	{
 		Order od=this.RetrieveOrderDetail(Order,custId);
 		Map<String,String> map=new HashMap<String,String>();
-		map.put("order.CreationDate", od.getCreationDate());
+		
+		map.put("order.orderNumber", Order);
+		map.put("customer.customerId", custId);
+		map.put("order.creationDate", od.getCreationDate());
 		map.put("order.totalToPay", od.getTotalToPay());
-		map.put("order.SubmitDate", od.getSubmitDate());
+		map.put("order.submitDate", od.getSubmitDate());
 		map.put("order.lastModifiedDate", od.getLastModifiedDate());
 		map.put("order.orderState", od.getOrderState());
 		map.put("order.paymentGroups", od.getPaymentGroups());
 		map.put("order.jurisdiction", od.getJurisdiction());
 		map.put("order.stateDetail", od.getStateDetail());
-		map.put("order.CreationDate.type", od.getCreationDate_type());
+		map.put("orderStatus.success", od.getOrderSuceessStatus());
+		map.put("orderStatus.failureReason", od.getError());
+		map.put("order.creationDate.type", od.getCreationDate_type());
 		map.put("order.totalToPay.type", od.getTotalToPay_type());
-		map.put("order.SubmitDate.type", od.getSubmitDate_type());
+		map.put("order.submitDate.type", od.getSubmitDate_type());
 		map.put("order.lastModifiedDate.type", od.getLastModifiedDate_type());
 		map.put("order.orderState.type", od.getOrderState_type());
 		map.put("order.paymentGroups.type", od.getPaymentGroups_type());
 		map.put("order.jurisdiction.type", od.getJurisdiction_type());
 		map.put("order.stateDetail.type", od.getStateDetail_type());
-		map.put("order.cust_rel_order", od.getCust_rel_order());
-		map.put("order.cust_rel_order.type", od.getCust_rel_order_type());
+		map.put("relation.order.orderNumber.customer.customerID", od.getCust_rel_order());
+		map.put("relation.order.orderNumber.customer.customerID.type", od.getCust_rel_order_type());
+		map.put("orderStatus.failureReason.type",od.getError_type());
+		map.put("orderStatus.success.type", od.getOrderSuceessStatus_type());
 
 
 		System.out.println("********"+od.getError()+od.getError().length());
-		if(od.getError().length()>0)
+		/*if(od.getError().length()>0)
 		{
-			map.put("order.isError","True");
-			map.put("order.isError.type",od.getError_type());
-		}
+			map.put("orderStatus.failureReason","True");
+			map.put("orderStatus.failureReason",od.getError_type());
+		}*/
 
 		return map;
 	}
@@ -436,7 +486,7 @@ public class Trial {
 		Cancel cancel=new Cancel();
 
 		try {
-			String regex="//d+";
+			//String regex="//d+";
 			//System.out.println("length::"+OrderId.length());
 			//System.out.println("match::"+OrderId.matches(regex));
 
@@ -473,7 +523,9 @@ public class Trial {
 									"arguments[0].click();", returnid(driver,Origin.ORDER_ID_SEARCH_BUTTON.getValue()));
 
 
-							if(returnid(driver,Origin.ORDER_NOT_FOUND_ERROR.getValue())==null){								
+							if(returnid(driver,Origin.ORDER_NOT_FOUND_ERROR.getValue())==null){	
+								JavascriptExecutor jse = (JavascriptExecutor)driver;
+							jse.executeScript("window.scrollBy(0,-2000)", "");							
 								waitId(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue());
 								try {
 
@@ -489,6 +541,14 @@ public class Trial {
 									}
 									else {
 										System.out.println("inside else");
+										((JavascriptExecutor) driver).executeScript(
+												"arguments[0].scrollIntoView(true);", returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()));
+										((JavascriptExecutor) driver).executeScript(
+												"arguments[0].click();", returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()));
+										//returnid(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue()).click();
+										System.out.println("clicked******");
+										waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
+										waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
 									}
 								}
 								catch(Exception e)
@@ -504,6 +564,9 @@ public class Trial {
 									waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
 									waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
 								}
+								
+								//JavascriptExecutor jse = (JavascriptExecutor)driver;
+								jse.executeScript("window.scrollBy(0,-2000)", "");
 
 								if(driver.findElement(By.xpath(Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue())) != null)
 								{

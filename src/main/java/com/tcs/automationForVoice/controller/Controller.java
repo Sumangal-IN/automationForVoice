@@ -47,7 +47,7 @@ public class Controller {
        
     }
 	
-	@RequestMapping(value = "orderStatus/{number}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+/*	@RequestMapping(value = "orderStatus/{number}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
 	public Map<String,String> orderStatus(@PathVariable("number") String OrderNo) 
@@ -57,7 +57,7 @@ public class Controller {
 		map.put("order.status",od.getOrderState());
 		return map;
 		
-	}
+	}*/
 	
 	@RequestMapping(value = "customerPhone", method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
@@ -88,14 +88,13 @@ public class Controller {
 	
 	   
 	
-	@RequestMapping(value = "cancelOrder/{number}", method=RequestMethod.DELETE,produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "cancelOrder/{number}/{customerId}", method=RequestMethod.DELETE,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
-	public Map<String,String> orderCancel(@PathVariable("number") String OrderNo) {
+	public Map<String,String> orderCancel(@PathVariable("number") String OrderNo,@PathVariable("customerId") String custId) {
 		   
-		System.out.println("sabya Order To Cancel"+OrderNo);
-		System.out.println("length::"+OrderNo.length());
-		System.out.println("match::"+OrderNo.matches("\\d+"));
+		System.out.println("Order To Cancel"+OrderNo);
+		
 		
         Trial tr=new Trial();
         Map<String,String> map=tr.orderCancel(OrderNo);

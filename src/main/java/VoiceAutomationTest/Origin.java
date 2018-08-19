@@ -10,7 +10,7 @@ public enum Origin
 	DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON("DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON","//*[@value='Enter']"),
 	DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT("DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT","html/body/pre/code"),
 	SENT_TO_OMS("SENT_TO_OMS","Order Just Submitted"),
-	CREATED_TO_OMS("CREATED_TO_OMS","Sales Order Notification Sent in ATG"),
+	CREATED_IN_OMS("CREATED_IN_OMS","Sales Order Notification Sent in ATG"),
 	PROCESSING("PROCESSING","Order Shipment processing started"),
 	DISPATCHED("DISPATCHED","Order Ready for Shipment"),
 	DELIVERED("DELIVERED","Order Shipped"),
