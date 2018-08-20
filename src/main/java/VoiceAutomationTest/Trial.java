@@ -75,28 +75,33 @@ public class Trial {
 			driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
 			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 			queryResult = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
-			
+
 			if(!queryResult.contains("No items returned"))
 			{
-				
-			
-			
-			submitDate = fetchValue(queryResult,"submittedDate");
-			creationDate=fetchValue(queryResult,"creationDate");
-			lastModifiedDate=fetchValue(queryResult,"lastModifiedDate");
-			orderState=fetchValue(queryResult,"state");
-			//orderState=fetchValue(queryResult,"status12");
-			orderState=Origin.valueOf(orderState.toUpperCase()).getValue();
-			orderOriginSource=fetchValue(queryResult,"orderOriginSource");
-			totalToPay=fetchValue(queryResult,"totalToPay");
-			paymentGroups=fetchValue(queryResult,"paymentGroups");
-			jurisdiction=fetchValue(queryResult,"jurisdiction");
-			stateDetail=fetchValue(queryResult,"stateDetail");
-			orderStatusSuccessStatus="true";
-			
-			error="";
-			cust_rel_order=this.AssociationCheck(driver,orderStatusSuccessStatus,error,queryResult, OrderNo, custId);
-			if(cust_rel_order.contains("invalid"))
+
+				orderStatusSuccessStatus="true";
+
+				error="";
+				cust_rel_order=this.AssociationCheck(driver,orderStatusSuccessStatus,error,queryResult, OrderNo, custId);
+				System.out.println("******************cust_rel_order"+cust_rel_order);
+				if(!cust_rel_order.contains("invalid"))
+				{
+					submitDate = fetchValue(queryResult,"submittedDate");
+					creationDate=fetchValue(queryResult,"creationDate");
+					lastModifiedDate=fetchValue(queryResult,"lastModifiedDate");
+					orderState=fetchValue(queryResult,"state");
+					//orderState=fetchValue(queryResult,"status12");
+					orderState=Origin.valueOf(orderState.toUpperCase()).getValue();
+					orderOriginSource=fetchValue(queryResult,"orderOriginSource");
+					totalToPay=fetchValue(queryResult,"totalToPay");
+					paymentGroups=fetchValue(queryResult,"paymentGroups");
+					jurisdiction=fetchValue(queryResult,"jurisdiction");
+					stateDetail=fetchValue(queryResult,"stateDetail");
+				}
+
+
+
+				/*if(cust_rel_order.contains("invalid"))
 			{
 				submitDate = "";
 				creationDate="";
@@ -111,9 +116,9 @@ public class Trial {
 				stateDetail="";
 				orderStatusSuccessStatus="true";
 				error="";
-				
+
+			}*/
 			}
-		}
 			else
 			{
 				error="";
@@ -121,8 +126,8 @@ public class Trial {
 				cust_rel_order="false";
 			}
 		}
-		
-		
+
+
 		catch(Exception e)
 		{
 			System.out.println("In catch!!!");
@@ -156,7 +161,7 @@ public class Trial {
 		{
 			cust_rel_order="false";
 		}
-		
+
 		od.setCust_rel_order(cust_rel_order);
 		od.setCust_rel_order_type(cust_rel_order_type);
 		od.setOrderSuceessStatus(orderStatusSuccessStatus);
@@ -175,46 +180,46 @@ public class Trial {
 		String newQueryResult="";
 		String extCustId="";
 		String flag="false";
-		
+
 		error="";
 		successStatus="true";
 		profileId=this.fetchValue(queryResult, "profileId");
 
 		try
 		{
-		
-		driver.get(Origin.GET_USER_PROFILE__DYN_URL.getValue());
-		String initialOrderQuery="<query-items item-descriptor="+'"'+"user"+'"'+">id="+'"'+profileId+'"'+"</query-items>";
+
+			driver.get(Origin.GET_USER_PROFILE__DYN_URL.getValue());
+			String initialOrderQuery="<query-items item-descriptor="+'"'+"user"+'"'+">id="+'"'+profileId+'"'+"</query-items>";
 
 
-		((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())), initialOrderQuery);
-		driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		newQueryResult = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
-		if(!newQueryResult.contains("No items returned"))
-		{
-			extCustId=this.fetchValue(newQueryResult, "externalId");
-			System.out.println("ext Iddd"+extCustId);
-			if(extCustId.trim().equals(custId))
+			((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())), initialOrderQuery);
+			driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
+			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			newQueryResult = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
+			if(!newQueryResult.contains("No items returned"))
 			{
-				flag="true";
+				extCustId=this.fetchValue(newQueryResult, "externalId");
+				System.out.println("ext Iddd"+extCustId);
+				if(extCustId.trim().equals(custId))
+				{
+					flag="true";
+				}
+				else
+				{
+					flag="invalid customer";
+				}
 			}
-			
-		}
-		else
-		{
-			flag="invalid customer";
-		}
-		
+
+
 		}
 		catch(Exception e)
 		{
 			successStatus="false";
 			error="Technical Error";
 		}
-		
+
 		System.out.println("*******************FLAG::::"+flag);
-		
+
 		return flag;
 
 	}
@@ -223,7 +228,7 @@ public class Trial {
 	{
 		Order od=this.RetrieveOrderDetail(Order,custId);
 		Map<String,String> map=new HashMap<String,String>();
-		
+
 		map.put("order.orderNumber", Order);
 		map.put("customer.customerId", custId);
 		map.put("order.creationDate", od.getCreationDate());
@@ -525,7 +530,7 @@ public class Trial {
 
 							if(returnid(driver,Origin.ORDER_NOT_FOUND_ERROR.getValue())==null){	
 								JavascriptExecutor jse = (JavascriptExecutor)driver;
-							jse.executeScript("window.scrollBy(0,-2000)", "");							
+								jse.executeScript("window.scrollBy(0,-2000)", "");							
 								waitId(driver,Origin.ORDER_AMENDMENT_AMEND_ORDER_BUTTON.getValue());
 								try {
 
@@ -564,7 +569,7 @@ public class Trial {
 									waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
 									waitId(driver,Origin.ORDER_AMENDMENT_ACTION_DROPDOWN.getValue());
 								}
-								
+
 								//JavascriptExecutor jse = (JavascriptExecutor)driver;
 								jse.executeScript("window.scrollBy(0,-2000)", "");
 
