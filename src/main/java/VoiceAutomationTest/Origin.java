@@ -15,6 +15,7 @@ public enum Origin
 	DISPATCHED("DISPATCHED","Order Ready for Shipment"),
 	DELIVERED("DELIVERED","Order Shipped"),
 	NOTFOUND("NOTFOUND",""),
+	REMOVED("REMOVED","Order Already Cancelled"),
 	FIEDMISSING("FIELDMISSING",""),
 	LOGIN_TEXT_FIELD("login id","//*[@id='user']"),
 	PASSWORD_FIELD("PASSWORD_FIELD","//*[@id='pwd']"),
@@ -46,7 +47,7 @@ public enum Origin
 	ORDER_ID_SEARCH_TEXTBOX("ORDER_ID_SEARCH_TEXTBOX","//*[@id='order']"),
 	ORDER_ID_SEARCH_BUTTON("ORDER_ID_SEARCH_BUTTON","//*[@id='start-tab']/section/div[1]/div[1]/div[2]/div[2]/form/div/div/input[2]"),
 	GET_USER_AGENT_URL("GET_USER_AGENT_URL","http://lnxs0506.uk.b-and-q.com:8030/agent-front/"),
-	ORDER_AMENDMENT_PROCEED_TO_CHKOUT("ORDER_AMENDMENT_PROCEED_TO_CHKOUT","//input[@value='Proceed to checkout']"),
+	ORDER_AMENDMENT_PROCEED_TO_CHKOUT("ORDER_AMENDMENT_PROCEED_TO_CHKOUT","//*[@id='tabs-basket']/div[1]/div[2]/div[1]/form/input[1]"),
 	ORDER_AMENDMENT_AMEND_ORDER_BUTTON_DISABLED("ORDER_AMENDMENT_AMEND_ORDER_BUTTON_DISABLED","//*[@id='Form1']/ul/li[1]/input[@disabled='']"),
 	ORDER_NOT_FOUND_ERROR("ORDER_NOT_FOUND_ERROR","//*[@id='tabs-order-history']/section/div[1]/p/strong"),
 	

@@ -42,8 +42,8 @@ public class Controller {
         return map;
        // Gson g=new Gson();
        
-   //1000019019/0065167419
-        
+   //1000019446/0065167419
+  //1000019446      
        
     }
 	
@@ -97,7 +97,7 @@ public class Controller {
 		
 		
         Trial tr=new Trial();
-        Map<String,String> map=tr.orderCancel(OrderNo);
+        Map<String,String> map=tr.orderCancel(OrderNo,custId);
        
        // Gson g=new Gson();
         return map;
