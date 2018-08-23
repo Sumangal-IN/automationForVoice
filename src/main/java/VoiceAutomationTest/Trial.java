@@ -632,7 +632,7 @@ public class Trial {
 					}
 					else {
 						success="false";
-					    failureReason="technical error";
+						failureReason="technical error";
 					}
 				}
 				else
@@ -662,12 +662,12 @@ public class Trial {
 
 		cancel.setOrderNo(OrderId);
 		cancel.setOrderNo_type(orderNo_type);
-		
+
 		cancel.setCancellable(cancellable);
 		cancel.setReasonOrderNotCancellable(reasonOrderNotCancellable);
 		cancel.setSuccess(success);
 		cancel.setFailureReason(failureReason);
-	
+
 		Map<String,String> cancelmap=new HashMap<String,String>();
 		cancelmap.put("order.orderNumber",cancel.getOrderNo());
 		cancelmap.put("order.orderNumber_type",cancel.getOrderNo_type());
@@ -689,4 +689,149 @@ public class Trial {
 
 		return cancelmap;
 	}
+
+
+	public Map<String,String> getCustomerContactDetails(String custId,String phoneNumber)
+	{
+		WebDriver driver=initDriver();
+		String queryResult="";
+		String currentPhnumber="";
+		String cust_Rel_Phn="false";
+		String success="false";
+		String failureReason="";
+		//String queryResult_type="String";
+		//String currentPhnumber_type="String";
+		String cust_Rel_Phn_type="boolean";
+		String success_type="boolean";
+		String failureReason_type="String";
+		Customer cust=new Customer();
+		try{
+
+			driver.get(Origin.GET_USER_PROFILE__DYN_URL.getValue());
+
+			String initialOrderQuery="<query-items item-descriptor="+'"'+"user"+'"'+">externalId="+'"'+custId+'"'+"</query-items>";
+
+
+			((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())), initialOrderQuery);
+			driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
+			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			queryResult = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
+			if(!queryResult.contains("No items returned"))
+			{
+				currentPhnumber=fetchValue(queryResult,"mobile").trim();
+				if(currentPhnumber.equals(phoneNumber))
+				{
+					cust_Rel_Phn="true";
+					success="true";
+
+				}
+
+			}
+		
+		}
+		catch(Exception ex)
+		{
+			failureReason="Technical Error";
+		}
+
+		cust.setFailureReason(failureReason);
+		cust.setFailureReason_type(failureReason_type);
+		cust.setSuccess(success);
+		cust.setSuccess_type(success_type);
+		cust.setCust_rel_Phn(cust_Rel_Phn);
+		cust.setCust_rel_Phn_type(cust_Rel_Phn_type);
+		
+		Map<String,String> map=new HashMap<String,String>();
+		map.put("customer.customerID", custId);
+		map.put("customer.mobileNumber", phoneNumber);
+		map.put("relation.customer.customerID.customer.mobileNumber", cust.getCust_rel_Phn());
+		map.put("relation.customer.customerID.customer.mobileNumber.type", cust.getCust_rel_Phn_type());
+		map.put("getContact.success",cust.getSuccess());
+		map.put("getContact.success.type",cust.getSuccess_type());
+		map.put("getContact.failureReason",cust.getFailureReason());
+		map.put("getContact.failureReason.type",cust.getFailureReason_type());
+		
+		driver.quit();
+		return map;
+	}
+
+	public Map<String,String> getCustomerPostCodeDetails(String custId,String postCode)
+	{
+		WebDriver driver=initDriver();
+		String queryResult="";
+		String currentPostcode="";
+		String cust_Rel_postcode="false";
+		String success="false";
+		String failureReason="";
+		//String queryResult_type="String";
+		//String currentPhnumber_type="String";
+		String cust_Rel_postcode_type="boolean";
+		String success_type="boolean";
+		String failureReason_type="String";
+		String id="";
+		String queryResultpostcode="";
+		String custzipcode="";
+		Customer cust=new Customer();
+		try{
+
+			driver.get(Origin.GET_USER_PROFILE__DYN_URL.getValue());
+
+			String initialOrderQuery="<query-items item-descriptor="+'"'+"user"+'"'+">externalId="+'"'+custId+'"'+"</query-items>";
+			
+
+
+			((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())), initialOrderQuery);
+			driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
+			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			queryResult = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
+			
+			if(!queryResult.contains("No items returned"))
+			{
+				id=fetchValue(queryResult,"homeAddress").trim();
+				String postCodeQuery="<query-items item-descriptor="+'"'+"contactInfo"+'"'+">id="+'"'+id+'"'+"</query-items>";
+				driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())).clear();
+				((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())), postCodeQuery);
+				driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
+				driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+				queryResultpostcode = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
+				custzipcode=fetchValue(queryResult,"postalCode").trim();
+				
+				if(!queryResultpostcode.contains("No items returned"))
+				if(custzipcode.equals(postCode))
+				{
+					cust_Rel_postcode="true";
+					success="true";
+
+				}
+
+			}
+		
+		}
+		catch(Exception ex)
+		{
+			failureReason="Technical Error";
+		}
+
+		cust.setFailureReason(failureReason);
+		cust.setFailureReason_type(failureReason_type);
+		cust.setSuccess(success);
+		cust.setSuccess_type(success_type);
+		cust.setCust_rel_Phn(cust_Rel_postcode);
+		cust.setCust_rel_Phn_type(cust_Rel_postcode_type);
+		
+		Map<String,String> map=new HashMap<String,String>();
+		map.put("customer.customerID", custId);
+		map.put("customer.postCode", postCode);
+		map.put("relation.customer.customerID.customer.postCode", cust.getCust_rel_Postcode());
+		map.put("relation.customer.customerID.customer.postCode.type", cust.getCust_rel_Postcode_type());
+		map.put("getContact.success",cust.getSuccess());
+		map.put("getContact.success.type",cust.getSuccess_type());
+		map.put("getContact.failureReason",cust.getFailureReason());
+		map.put("getContact.failureReason.type",cust.getFailureReason_type());
+		
+		driver.quit();
+		return map;
+	}
+
+
 }
