@@ -290,9 +290,10 @@ public class Trial {
 
 	}
 
-	public Customer setCustomerDetail(String custId,String mobile,String postCode) 
+	public Map<String,String> setCustomerDetail(String custId,String mobile,String postCode) 
 	{
-		String status="";
+		String successStatus="";
+		String failureReason="";
 		WebDriver driver=initDriver();
 
 		try {
@@ -322,6 +323,7 @@ public class Trial {
 								"arguments[0].scrollIntoView(true);", returnid(driver,Origin.CONTACT_CENTER_CUSTOMER_SEARCH_LOOKUP.getValue()));
 						((JavascriptExecutor) driver).executeScript(
 								"arguments[0].click();", returnid(driver,Origin.CONTACT_CENTER_CUSTOMER_SEARCH_LOOKUP.getValue()));
+						Thread.sleep(5000);
 
 						waitId(driver,Origin.CONTACT_CENTER_CUSTOMER_SEARCH_EDIT.getValue());
 
@@ -347,11 +349,11 @@ public class Trial {
 									returnid(driver,Origin.CONTACT_CENTER_CUSTOMER_SEARCH_MOBILE.getValue()).clear();
 
 									returnid(driver,Origin.CONTACT_CENTER_CUSTOMER_SEARCH_MOBILE.getValue()).sendKeys(mobile);
-									status="Updated mobileNo";
+									successStatus="";
 								}
 								else
 								{
-									status="Nothing to update mobileNo";
+									successStatus="";
 								}
 
 								break;
@@ -376,7 +378,7 @@ public class Trial {
 						System.out.println("***"+newNumber);
 						if(newNumber.equals(mobile))
 						{
-							status=status+"::thank you";
+							successStatus="true";
 						}
 					}
 					if(postCode.length()>0)
@@ -393,11 +395,11 @@ public class Trial {
 									returnid(driver,Origin.CONTACT_CENTER_POSTCODE.getValue()).clear();
 
 									returnid(driver,Origin.CONTACT_CENTER_POSTCODE.getValue()).sendKeys(postCode);
-									status="Updated postCode";
+									successStatus="";
 								}
 								else
 								{
-									status="Nothing to update postCode";
+									successStatus="";
 								}
 
 								break;
@@ -424,7 +426,7 @@ public class Trial {
 						System.out.println("***"+newPostCode);
 						if(newPostCode.contains(postCode))
 						{
-							status=status+"::thank you";
+							successStatus="true";
 						}
 
 					}
@@ -436,12 +438,33 @@ public class Trial {
 		{
 			System.out.println("In Catch!!");
 			e.printStackTrace();
+			successStatus="false";
+			failureReason="a technical error occured";
 
 		}
+		
+		
 		Customer cust=new Customer();
-		cust.setUpdateMessage(status);
+		cust.setUpdateSuccessStatus(successStatus);
+		cust.setUpdateFailureReason(failureReason);
+		Map<String,String> map=new HashMap<String,String>();
+		map.put("customer.customerID", custId);
+		if(mobile.length()>0)
+		{
+			map.put("customer.mobileNumber", mobile);
+			map.put("updateMobileNumber.success", cust.getUpdateSuccessStatus());
+			map.put("updateMobileNumber.failureReason", cust.getUpdateFailureReason());
+		}
+		if(postCode.length()>0)
+		{
+			map.put("customer.zipcode", postCode);
+			map.put("udpateZipcode.success", cust.getUpdateSuccessStatus());
+			map.put("udpateZipcode.failureReason", cust.getUpdateFailureReason());
+		}
+		
+		
 		driver.quit();
-		return cust;
+		return map;
 	}
 	public WebElement returnid(WebDriver driver,String id)
 	{
@@ -775,6 +798,7 @@ public class Trial {
 		try{
 
 			driver.get(Origin.GET_USER_PROFILE__DYN_URL.getValue());
+			
 
 			String initialOrderQuery="<query-items item-descriptor="+'"'+"user"+'"'+">externalId="+'"'+custId+'"'+"</query-items>";
 			
@@ -788,13 +812,19 @@ public class Trial {
 			if(!queryResult.contains("No items returned"))
 			{
 				id=fetchValue(queryResult,"homeAddress").trim();
+				System.out.println("***Homeaddress id****"+id);
+				driver.get(Origin.GET_USER_PROFILE__DYN_URL.getValue());
 				String postCodeQuery="<query-items item-descriptor="+'"'+"contactInfo"+'"'+">id="+'"'+id+'"'+"</query-items>";
-				driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())).clear();
+				
+				//driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())).clear();
 				((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_TEXTBOX.getValue())), postCodeQuery);
+				
 				driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_ENTER_BUTTON.getValue())).click();
 				driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+				//Thread.sleep(60000);
 				queryResultpostcode = driver.findElement(By.xpath(Origin.DYNADMIN_PAGE_COMPONENT_BROWSER_QUERY_RESULT.getValue())).getText();
-				custzipcode=fetchValue(queryResult,"postalCode").trim();
+				custzipcode=fetchValue(queryResultpostcode,"postalCode").replaceAll("\\s+","");
+				System.out.println("***postal code ****"+custzipcode);
 				
 				if(!queryResultpostcode.contains("No items returned"))
 				if(custzipcode.equals(postCode))
@@ -816,18 +846,18 @@ public class Trial {
 		cust.setFailureReason_type(failureReason_type);
 		cust.setSuccess(success);
 		cust.setSuccess_type(success_type);
-		cust.setCust_rel_Phn(cust_Rel_postcode);
-		cust.setCust_rel_Phn_type(cust_Rel_postcode_type);
+		cust.setCust_rel_Postcode(cust_Rel_postcode);
+		cust.setCust_rel_Postcode_type(cust_Rel_postcode_type);
 		
 		Map<String,String> map=new HashMap<String,String>();
 		map.put("customer.customerID", custId);
-		map.put("customer.postCode", postCode);
+		map.put("customer.zipcode", postCode);
 		map.put("relation.customer.customerID.customer.postCode", cust.getCust_rel_Postcode());
 		map.put("relation.customer.customerID.customer.postCode.type", cust.getCust_rel_Postcode_type());
-		map.put("getContact.success",cust.getSuccess());
-		map.put("getContact.success.type",cust.getSuccess_type());
-		map.put("getContact.failureReason",cust.getFailureReason());
-		map.put("getContact.failureReason.type",cust.getFailureReason_type());
+		map.put("getZipcode.success",cust.getSuccess());
+		map.put("getZipcode.success.type",cust.getSuccess_type());
+		map.put("getZipcode.failureReason",cust.getFailureReason());
+		map.put("getZipcode.failureReason.type",cust.getFailureReason_type());
 		
 		driver.quit();
 		return map;

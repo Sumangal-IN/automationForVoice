@@ -73,17 +73,17 @@ public class Controller {
 	
 	
 
-	/*@RequestMapping(value = "/getZipcode/{customerID}/{zipcode}", method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/getZipcode/{customerID}/{zipcode}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
 	public Map<String,String> customerzip(@PathVariable("customerID") String customerID,@PathVariable("zipcode") String zipcode ) 
 	{
 		Trial tr=new Trial();
-        Map<String,String> map=tr.retriveOrder(customerID,zipcode);
+        Map<String,String> map=tr.getCustomerPostCodeDetails(customerID,zipcode.replaceAll("\\s+",""));
         return map;
 		
 		
-	}*/
+	}
 	
 	/*@RequestMapping(value = "/getZipcode/{customerID}/{phoneNumber}", method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
@@ -102,39 +102,38 @@ public class Controller {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	@RequestMapping(value = "customerPhone", method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
-	   
+	@RequestMapping(value = "/updateContactNumber/{customerID}/{mobileNo}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+		   
 	@ResponseBody
-	public String customerPhone(@RequestBody Customer customer) 
+	public Map<String,String> updateContactNumber(@PathVariable("customerID") String customerID,@PathVariable("mobileNo") String mobileNo ) 
 	{
-		System.out.println("customer phone"+customer.getCustomerMobile());
+		
 		Trial tr=new Trial();
 		
-        Customer cust=tr.setCustomerDetail(customer.getCustId(), customer.getCustomerMobile(), "");
-        Gson g=new Gson();
-        return g.toJson(cust.getUpdateMessage());
+		
+        Map<String,String> map=tr.setCustomerDetail(customerID, mobileNo, "");
+        		
+        return map;
+		
 		
 	}
-	@RequestMapping(value = "customerPostcode", method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
+	
+	@RequestMapping(value = "/udpateZipcode/{customerID}/{postCode}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
-	public String customerPostcode(@RequestBody Customer customer) 
+	public Map<String,String> udpateZipcode(@PathVariable("customerID") String customerID,@PathVariable("postCode") String postCode ) 
 	{
-		System.out.println("customer postcode"+customer.getCustPostCode());
+		
 		Trial tr=new Trial();
 		
-        Customer cust=tr.setCustomerDetail(customer.getCustId(),"",customer.getCustPostCode());
-        Gson g=new Gson();
-        return g.toJson(cust.getUpdateMessage());
+		
+        Map<String,String> map=tr.setCustomerDetail(customerID, "", postCode);
+        		
+        return map;
+		
 		
 	}
+	
 	
 	   
 	

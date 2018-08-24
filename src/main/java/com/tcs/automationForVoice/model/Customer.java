@@ -20,9 +20,19 @@ public class Customer {
 	private String cust_rel_Phn_type;
 	private String cust_rel_Postcode;
 	private String cust_rel_Postcode_type;
+	private String updateFailureReason;
+	private String updateSuccessStatus;
 	
 	
 	
+	public String getUpdateFailureReason() {
+		return updateFailureReason;
+	}
+
+	public void setUpdateFailureReason(String updateFailureReason) {
+		this.updateFailureReason = updateFailureReason;
+	}
+
 	public String getUpdateMessage() {
 		return updateMessage;
 	}
@@ -157,6 +167,14 @@ public class Customer {
 
 	public void setCust_rel_Postcode(String cust_rel_Postcode) {
 		this.cust_rel_Postcode = cust_rel_Postcode;
+	}
+
+	public String getUpdateSuccessStatus() {
+		return updateSuccessStatus;
+	}
+
+	public void setUpdateSuccessStatus(String updateSuccessStatus) {
+		this.updateSuccessStatus = updateSuccessStatus;
 	}
 
 }
