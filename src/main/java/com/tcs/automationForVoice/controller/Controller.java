@@ -60,45 +60,32 @@ public class Controller {
 	}*/
 	
 	
-	@RequestMapping(value = "/getContact/{customerID}/{phoneNumber}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/getMobileNumber/{customerID}/{mobileNo}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
-	public Map<String,String> customerPhone(@PathVariable("customerID") String customerID,@PathVariable("phoneNumber") String phoneNumber ) 
+	public Map<String,String> customerPhone(@PathVariable("customerID") String customerID,@PathVariable("mobileNo") String mobileNo ) 
 	{
 		Trial tr=new Trial();
-        Map<String,String> map=tr.getCustomerContactDetails(customerID,phoneNumber);
+        Map<String,String> map=tr.getCustomerContactDetails(customerID,mobileNo);
         return map;
 		
 	}
 	
 	
 
-	@RequestMapping(value = "/getZipcode/{customerID}/{zipcode}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/getPostcode/{customerID}/{postCode}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
-	public Map<String,String> customerzip(@PathVariable("customerID") String customerID,@PathVariable("zipcode") String zipcode ) 
+	public Map<String,String> customerzip(@PathVariable("customerID") String customerID,@PathVariable("postCode") String postCode ) 
 	{
 		Trial tr=new Trial();
-        Map<String,String> map=tr.getCustomerPostCodeDetails(customerID,zipcode.replaceAll("\\s+",""));
+        Map<String,String> map=tr.getCustomerPostCodeDetails(customerID,postCode.replaceAll("\\s+",""));
         return map;
 		
 		
 	}
 	
-	/*@RequestMapping(value = "/getZipcode/{customerID}/{phoneNumber}", method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
-	   
-	@ResponseBody
-	public String customerPhone(@RequestBody Customer customer) 
-	{
-		System.out.println("customer phone"+customer.getCustomerMobile());
-		Trial tr=new Trial();
-		
-        Customer cust=tr.setCustomerDetail(customer.getCustId(), customer.getCustomerMobile(), "");
-        Gson g=new Gson();
-        return g.toJson(cust.getUpdateMessage());
-		
-	}
-	*/
+	
 	
 	
 	
@@ -118,7 +105,7 @@ public class Controller {
 		
 	}
 	
-	@RequestMapping(value = "/udpateZipcode/{customerID}/{postCode}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/updatePostcode/{customerID}/{postCode}", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	   
 	@ResponseBody
 	public Map<String,String> udpateZipcode(@PathVariable("customerID") String customerID,@PathVariable("postCode") String postCode ) 

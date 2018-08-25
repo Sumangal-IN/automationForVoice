@@ -135,6 +135,7 @@ public class Trial {
 			System.out.println("In catch!!!");
 			error="Technical Error";
 			orderStatusSuccessStatus="false";
+			cust_rel_order="";
 			e.printStackTrace();
 		}
 
@@ -457,9 +458,9 @@ public class Trial {
 		}
 		if(postCode.length()>0)
 		{
-			map.put("customer.zipcode", postCode);
-			map.put("udpateZipcode.success", cust.getUpdateSuccessStatus());
-			map.put("udpateZipcode.failureReason", cust.getUpdateFailureReason());
+			map.put("customer.postCode", postCode);
+			map.put("udpatepostCode.success", cust.getUpdateSuccessStatus());
+			map.put("udpatepostCode.failureReason", cust.getUpdateFailureReason());
 		}
 		
 		
@@ -693,17 +694,17 @@ public class Trial {
 
 		Map<String,String> cancelmap=new HashMap<String,String>();
 		cancelmap.put("order.orderNumber",cancel.getOrderNo());
-		cancelmap.put("order.orderNumber_type",cancel.getOrderNo_type());
+		//cancelmap.put("order.orderNumber_type",cancel.getOrderNo_type());
 		cancelmap.put("customer.customerId",custId);
 
 		cancelmap.put("orderCancel.cancelled", cancel.getCancellable());
-		cancelmap.put("orderCancel.cancelled_type", cancel.getCancellable_type());
+		//cancelmap.put("orderCancel.cancelled_type", cancel.getCancellable_type());
 		cancelmap.put("orderCancel.reasonOrderNotCancelled", cancel.getReasonOrderNotCancellable());
-		cancelmap.put("orderCancel.reasonOrderNotCancelled_type", cancel.getReasonOrderNotCancellable_type());
+		//cancelmap.put("orderCancel.reasonOrderNotCancelled_type", cancel.getReasonOrderNotCancellable_type());
 		cancelmap.put("orderCancel.success",cancel.getSuccess());
-		cancelmap.put("orderCancel.success",cancel.getSuccess_type());
+		//cancelmap.put("orderCancel.success",cancel.getSuccess_type());
 		cancelmap.put("orderCancel.failureReason",cancel.getFailureReason());
-		cancelmap.put("orderCancel.failureReason.type",cancel.getFailureReason_type());
+		//cancelmap.put("orderCancel.failureReason.type",cancel.getFailureReason_type());
 
 
 		System.clearProperty(OrderId+"_State");
@@ -720,7 +721,7 @@ public class Trial {
 		String queryResult="";
 		String currentPhnumber="";
 		String cust_Rel_Phn="false";
-		String success="false";
+		String success="true";
 		String failureReason="";
 		//String queryResult_type="String";
 		//String currentPhnumber_type="String";
@@ -745,7 +746,7 @@ public class Trial {
 				if(currentPhnumber.equals(phoneNumber))
 				{
 					cust_Rel_Phn="true";
-					success="true";
+					
 
 				}
 
@@ -755,6 +756,8 @@ public class Trial {
 		catch(Exception ex)
 		{
 			failureReason="Technical Error";
+			success="false";
+			cust_Rel_Phn="";
 		}
 
 		cust.setFailureReason(failureReason);
@@ -768,11 +771,11 @@ public class Trial {
 		map.put("customer.customerID", custId);
 		map.put("customer.mobileNumber", phoneNumber);
 		map.put("relation.customer.customerID.customer.mobileNumber", cust.getCust_rel_Phn());
-		map.put("relation.customer.customerID.customer.mobileNumber.type", cust.getCust_rel_Phn_type());
+		//map.put("relation.customer.customerID.customer.mobileNumber.type", cust.getCust_rel_Phn_type());
 		map.put("getContact.success",cust.getSuccess());
-		map.put("getContact.success.type",cust.getSuccess_type());
+		//map.put("getContact.success.type",cust.getSuccess_type());
 		map.put("getContact.failureReason",cust.getFailureReason());
-		map.put("getContact.failureReason.type",cust.getFailureReason_type());
+		//map.put("getContact.failureReason.type",cust.getFailureReason_type());
 		
 		driver.quit();
 		return map;
@@ -784,7 +787,7 @@ public class Trial {
 		String queryResult="";
 		String currentPostcode="";
 		String cust_Rel_postcode="false";
-		String success="false";
+		String success="true";
 		String failureReason="";
 		//String queryResult_type="String";
 		//String currentPhnumber_type="String";
@@ -830,7 +833,7 @@ public class Trial {
 				if(custzipcode.equals(postCode))
 				{
 					cust_Rel_postcode="true";
-					success="true";
+					
 
 				}
 
@@ -840,6 +843,8 @@ public class Trial {
 		catch(Exception ex)
 		{
 			failureReason="Technical Error";
+			success="false";
+			cust_Rel_postcode="";
 		}
 
 		cust.setFailureReason(failureReason);
@@ -851,13 +856,13 @@ public class Trial {
 		
 		Map<String,String> map=new HashMap<String,String>();
 		map.put("customer.customerID", custId);
-		map.put("customer.zipcode", postCode);
+		map.put("customer.postcode", postCode);
 		map.put("relation.customer.customerID.customer.postCode", cust.getCust_rel_Postcode());
-		map.put("relation.customer.customerID.customer.postCode.type", cust.getCust_rel_Postcode_type());
-		map.put("getZipcode.success",cust.getSuccess());
-		map.put("getZipcode.success.type",cust.getSuccess_type());
-		map.put("getZipcode.failureReason",cust.getFailureReason());
-		map.put("getZipcode.failureReason.type",cust.getFailureReason_type());
+		//map.put("relation.customer.customerID.customer.postCode.type", cust.getCust_rel_Postcode_type());
+		map.put("getPostcode.success",cust.getSuccess());
+		//map.put("getPostcode.success.type",cust.getSuccess_type());
+		map.put("getPostcode.failureReason",cust.getFailureReason());
+		//map.put("getPostcode.failureReason.type",cust.getFailureReason_type());
 		
 		driver.quit();
 		return map;
