@@ -85,7 +85,7 @@ public class Trial {
 				error="";
 				cust_rel_order=this.AssociationCheck(driver,orderStatusSuccessStatus,error,queryResult, OrderNo, custId);
 				System.out.println("******************cust_rel_order"+cust_rel_order);
-				if(!cust_rel_order.contains("invalid"))
+				if(!cust_rel_order.contains("invalid") && !cust_rel_order.contains("null"))
 				{
 					submitDate = fetchValue(queryResult,"submittedDate");
 					creationDate=fetchValue(queryResult,"creationDate");
@@ -138,6 +138,13 @@ public class Trial {
 			cust_rel_order="";
 			e.printStackTrace();
 		}
+		
+		if(cust_rel_order.contains("null"))
+		{
+			error="Technical Error";
+			orderStatusSuccessStatus="false";
+		}
+	
 
 
 		od.setSubmitDate(submitDate);
@@ -163,6 +170,10 @@ public class Trial {
 		if(cust_rel_order.contains("invalid"))
 		{
 			cust_rel_order="false";
+		}
+		if(cust_rel_order.contains("null"))
+		{
+			cust_rel_order="";
 		}
 
 		od.setCust_rel_order(cust_rel_order);
@@ -219,6 +230,7 @@ public class Trial {
 		{
 			successStatus="false";
 			error="Technical Error";
+			flag="null";
 		}
 
 		System.out.println("*******************FLAG::::"+flag);
@@ -244,7 +256,8 @@ public class Trial {
 		map.put("order.stateDetail", od.getStateDetail());
 		map.put("orderStatus.success", od.getOrderSuceessStatus());
 		map.put("orderStatus.failureReason", od.getError());
-		map.put("order.creationDate.type", od.getCreationDate_type());
+		map.put("relation.order.orderNumber.customer.customerID", od.getCust_rel_order());
+/*		map.put("order.creationDate.type", od.getCreationDate_type());
 		map.put("order.totalToPay.type", od.getTotalToPay_type());
 		map.put("order.submitDate.type", od.getSubmitDate_type());
 		map.put("order.lastModifiedDate.type", od.getLastModifiedDate_type());
@@ -252,10 +265,10 @@ public class Trial {
 		map.put("order.paymentGroups.type", od.getPaymentGroups_type());
 		map.put("order.jurisdiction.type", od.getJurisdiction_type());
 		map.put("order.stateDetail.type", od.getStateDetail_type());
-		map.put("relation.order.orderNumber.customer.customerID", od.getCust_rel_order());
+		
 		map.put("relation.order.orderNumber.customer.customerID.type", od.getCust_rel_order_type());
 		map.put("orderStatus.failureReason.type",od.getError_type());
-		map.put("orderStatus.success.type", od.getOrderSuceessStatus_type());
+		map.put("orderStatus.success.type", od.getOrderSuceessStatus_type());*/
 
 
 		System.out.println("********"+od.getError()+od.getError().length());
@@ -520,8 +533,10 @@ public class Trial {
 		Cancel cancel=new Cancel();
 		String orderState=System.getProperty(OrderId+"_State");
 		System.out.println("order state*****"+orderState);
-
-		if(orderState.equals("CREATED_IN_OMS")){
+		try
+		{
+		
+		if(orderState.equals("CREATED_IN_OMS") || orderState.equals("PROCESSING")){
 
 			try {
 				//String regex="//d+";
@@ -682,6 +697,19 @@ public class Trial {
 				cancellable="false";
 			}
 		}
+		}
+		
+		catch(NullPointerException ne)
+		{
+			reasonOrderNotCancellable="Order customerId relationship wrong";
+			cancellable="false";
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		//************
 
 
 		cancel.setOrderNo(OrderId);
